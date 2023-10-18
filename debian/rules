@@ -1,4 +1,16 @@
 #!/usr/bin/make -f
+# -*- makefile -*-
+
+include /usr/share/dpkg/pkg-info.mk
 
 %:
 	dh $@
+
+override_dh_auto_configure:
+	cp package.json package.json.save
+	sed -i 's/0.0.0-development/$(DEB_VERSION_UPSTREAM)/' package.json
+	dh_auto_configure
+
+override_dh_auto_clean:
+	dh_auto_clean
+	-test -e package.json.save && mv package.json.save package.json
